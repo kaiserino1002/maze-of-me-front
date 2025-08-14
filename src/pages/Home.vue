@@ -2,6 +2,7 @@
 <template>
   <div>
     <h1>Home</h1>
+     <DevAuthDebug />
     <div v-if="user">
       ようこそ、{{ user }} さん
     </div>
@@ -14,9 +15,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { getUser } from '../utilities/auth.ts'
+import DevAuthDebug from "../components/Debug.vue"
 
 const user = ref(null)
-
 
 onMounted(async () => {
   try {
