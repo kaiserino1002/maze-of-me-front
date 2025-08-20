@@ -1,5 +1,4 @@
-// src/utilities/auth.ts
-import api from './axios'; // ← axios.ts に統一
+import api from './axios';
 
 export async function getUser() {
   await api.get('/sanctum/csrf-cookie');

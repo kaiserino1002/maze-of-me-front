@@ -4,11 +4,20 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   server: {
-    port: 8000,
+    port: 5173,
     proxy: {
-      '/api': 'http://localhost:3000',
-      '/sanctum': 'http://localhost:3000',
-      '/auth': 'http://localhost:3000',
-    }
+      '/api': {
+        target: 'http://localhost', // 3000 → 80
+        changeOrigin: true,
+      },
+      '/sanctum': {
+        target: 'http://localhost',
+        changeOrigin: true,
+      },
+      '/auth': {
+        target: 'http://localhost',
+        changeOrigin: true,
+      },
+    },
   }
 })

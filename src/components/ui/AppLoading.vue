@@ -33,7 +33,7 @@ defineProps<{ show?: boolean }>();
     position: fixed;
     inset: 0;
     z-index: 1040;
-    background-color: rgba(244, 245, 246, 0.5); // 半透明背景
+    background-color: rgba(244, 245, 246, 0.5);
   }
   .loading-animation {
     position: fixed;

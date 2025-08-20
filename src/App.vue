@@ -1,34 +1,27 @@
-<template>
-  <div>
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/login">Login</router-link>
-    </nav>
-    <hr />
-    <router-view />
-  </div>
-</template>
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useAuthStore } from './stores/auth'
 
-<script setup>
-import { onMounted } from 'vue'; 
-import api from 'axios';    
+const auth = useAuthStore()
 
-onMounted(async () => {
-  try {
-    // CSRF cookie取得
-    await api.get('/sanctum/csrf-cookie');
-
-    // 認証状態確認
-    const res = await api.get('/api/user');
-    console.log('ログイン中のユーザー:', res.data);
-  } catch (error) {
-    console.log('未ログイン or 401:', error.response?.status);
-  }
-});
+onMounted(() => {
+  auth.fetchUser()
+})
 </script>
 
-<style scoped>
-nav {
-  margin: 1rem;
+<template>
+  <div v-if="auth.isLoading" class="loading">
+    ローディング中...
+  </div>
+  <router-view v-else />
+</template>
+
+<style>
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 1.5rem;
 }
 </style>

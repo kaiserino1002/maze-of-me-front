@@ -1,11 +1,9 @@
-// src/utilities/debugAuth.ts
 import axios, { AxiosError } from "axios";
 
 export const api = axios.create({
-  baseURL: "http://localhost:3000", // APIは3000固定
+  baseURL: "http://localhost:3000",
   withCredentials: true,
   headers: { Accept: "application/json" },
-  // 念のため明示
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
 });
