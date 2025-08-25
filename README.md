@@ -1,5 +1,39 @@
-# Vue 3 + TypeScript + Vite
+Maze Of Me Front
+概要：
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Vue3 + Vite + TypeScript + Vuetify を使ったフロントエンド。
+ノードを可視化して思考の流れをマッピング。Vercel でホスティング済み。
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+技術スタック：
+
+Vue 3
+
+Vite
+
+TypeScript
+
+Pinia
+
+Vue Router
+
+Vuetify
+
+Vercel
+
+セットアップ
+git clone git@github.com:kaiserino1002/maze-of-me-front.git
+cd maze-of-me-front
+npm install
+npm run dev
+
+公開：
+
+Vercel 自動デプロイ（devブランチをpushで反映）
+
+公開URL: https://maze-of-me-front.vercel.app
+
+今後：
+
+ダミーデータモード（ログイン不要でノード作成・表示）
+
+Googleログイン後のUI改善

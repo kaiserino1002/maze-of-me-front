@@ -1,31 +1,21 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
-})
+interface User {
+  id: number
+  name: string
+  email: string
+}
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null as null | { id: number; name: string },
-    isLoading: true,
+    user: null as User | null,
   }),
   actions: {
-    async fetchUser() {
-      this.isLoading = true
-      try {
-        const res = await api.get('/api/user')
-        this.user = res.data
-      } catch {
-        this.user = null
-      } finally {
-        this.isLoading = false
-      }
+    setUser(user: User) {
+      this.user = user
     },
-    async logout() {
-      await api.post('/api/logout')
+    clearUser() {
       this.user = null
-    }
+    },
   },
 })

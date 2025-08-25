@@ -1,11 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../pages/Home.vue'
 import Login from '../pages/Login.vue'
-import { useAuthStore } from '../stores/auth'
+import Map from '../pages/Map.vue'
+import AnalyzeTest from '../pages/AnalyzeTest.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
-  { path: '/login', name: 'Login', component: Login, meta: { guestOnly: true } },
+  { path: '/login', name: 'Login', component: Login, meta: { requiresAuth: false } },
+  { path: '/map', name: 'Map', component: Map },
+  { path: '/analyze-test', name: 'AnalyzeTest', component: AnalyzeTest },
 ]
 
 const router = createRouter({
