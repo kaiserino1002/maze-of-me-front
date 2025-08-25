@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import axios from "axios"
 
 interface User {
   id: number
@@ -9,8 +10,13 @@ interface User {
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null as User | null,
+    isLoading: false,
   }),
   actions: {
+    async fetchUser() {
+      const res = await axios.get("/api/user")
+      this.user = res.data
+    },
     setUser(user: User) {
       this.user = user
     },
