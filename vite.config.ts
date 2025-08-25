@@ -16,15 +16,15 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost',
         changeOrigin: true,
       },
       '/sanctum': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost',
         changeOrigin: true,
       },
       '/auth': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost',
         changeOrigin: true,
       },
     },

@@ -1,31 +1,26 @@
-<!-- frontend/src/pages/Home.vue -->
+<script setup lang="ts">
+import { useAuthStore } from '../stores/auth'
+const auth = useAuthStore()
+
+const handleLogout = async () => {
+  await auth.logout()
+}
+</script>
+
 <template>
   <div>
     <h1>Home</h1>
-     <DevAuthDebug />
-    <div v-if="user">
-      ようこそ、{{ user }} さん
+
+    <div v-if="auth.user">
+      ようこそ、{{ auth.user.name }} さん
+      <button @click="handleLogout">ログアウト</button>
     </div>
+
     <div v-else>
       ログインしていません
+      <router-link to="/login">
+        <button>ログイン</button>
+      </router-link>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { getUser } from '../utilities/auth.ts'
-import DevAuthDebug from "../components/Debug.vue"
-
-const user = ref(null)
-
-onMounted(async () => {
-  try {
-    const result = await getUser()
-    console.log('APIからのレスポンス:', result)
-    user.value = result
-  } catch (e) {
-    console.log('未ログイン、またはエラー:', e)
-  }
-})
-</script>
