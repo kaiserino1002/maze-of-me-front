@@ -4,9 +4,11 @@ import { useNodeStore } from "@/stores/node"
 import { fetchNodes, saveNode } from "@/api/nodes"
 
 import NodeForm from "@/components/node/Form.vue"
-import MapCanvas from "@/components/node/MapCanvas.vue"
+import MapCanvas from "@/components/ui/MapCanvas.vue"
 import DetailPanel from "@/components/ui/DetailPanel.vue"
 import ZoomControls from "@/components/ui/ZoomControls.vue"
+import { useLinkGenerator } from "@/composables/useLinkGenerator"
+import { log } from "console"
 
 const nodeStore = useNodeStore()
 const selectedNodeId = ref<number | null>(null)
@@ -17,23 +19,26 @@ const pan = ref({ x: 0, y: 0 })
 const svgWrapper = ref<{ svgEl: SVGSVGElement | null } | null>(null)
 
 async function loadNodes() {
+  console.log("[loadNodes] start")
   const res = await fetchNodes()
-  nodeStore.clearNodes()
+  console.log("[loadNodes] fetched:", res)
 
-  res.forEach((n: any, i: number) => {
+  nodeStore.clearNodes()
+  res.forEach((n: any) => {
+    console.log("[loadNodes] adding node:", n)
     nodeStore.addNode({
       id: n.id,
       text: n.text,
       created_at: n.created_at,
-      x: n.x ?? (i % 5) * 200 + 100,
-      y: n.y ?? Math.floor(i / 5) * 150 + 100,
+      x: n.x ?? Math.random() * 800,
+      y: n.y ?? Math.random() * 600,
       color: n.color ?? "#cccccc",
-      analysis:
-        n.analysis && typeof n.analysis === "string"
-          ? JSON.parse(n.analysis)
-          : n.analysis ?? null,
+      analysis: typeof n.analysis === "string" ? JSON.parse(n.analysis) : n.analysis ?? null,
     })
   })
+
+  nodeStore.links = useLinkGenerator(nodeStore.nodes)
+  console.log("[loadNodes] finished, nodes:", nodeStore.nodes, "links:", nodeStore.links)
 }
 
 async function onSaveNode(node: any) {
@@ -55,6 +60,8 @@ async function onSaveNode(node: any) {
 }
 
 function onSelectNode(id: number) {
+  console.log(id);
+  
   selectedNodeId.value = id
 }
 
@@ -63,40 +70,51 @@ function onCloseDetail() {
 }
 
 function onPointerDownNode(ev: PointerEvent, nodeId: number) {
-  const svg = svgWrapper.value?.svgEl
-  if (!svg) return
+  console.log("[onPointerDownNode] drag start", nodeId)
 
-  const pt = svg.createSVGPoint()
-  pt.x = ev.clientX
-  pt.y = ev.clientY
-  const cursor = pt.matrixTransform(svg.getScreenCTM()?.inverse())
+  const svg = svgWrapper.value?.svgEl
+  if (!svg) {
+    console.warn("[onPointerDownNode] svg not found")
+    return
+  }
 
   const node = nodeStore.nodes.find((n) => n.id === nodeId)
-  if (!node) return
+  if (!node) {
+    console.warn("[onPointerDownNode] node not found", nodeId)
+    return
+  }
 
-  const offsetX = cursor.x - node.x
-  const offsetY = cursor.y - node.y
+  const svgEl: SVGSVGElement = svg
 
-  function onMove(e: PointerEvent) {
-    if (!svg) return
-
+  function getCursor(e: PointerEvent) {
+    const pt = svgEl.createSVGPoint()
     pt.x = e.clientX
     pt.y = e.clientY
-
-    const ctm = svg.getScreenCTM()
-    if (!ctm) return
-
-    const loc = pt.matrixTransform(ctm.inverse())
-    nodeStore.updateNodePosition(nodeId, loc.x - offsetX, loc.y - offsetY)
+    const ctm = svgEl.getScreenCTM()
+    const result = ctm ? pt.matrixTransform(ctm.inverse()) : { x: e.clientX, y: e.clientY }
+    console.log("[getCursor]", result)
+    return result
   }
+
+  const start = getCursor(ev)
+  console.log("[onPointerDownNode] start pos:", start)
+
+  function onMove(e: PointerEvent) {
+    const loc = getCursor(e)
+    console.log("[onMove] moving node:", nodeId, loc.x, loc.y)
+    nodeStore.updateNodePosition(nodeId, loc.x, loc.y)
+  }
+
   function onUp() {
-    window.removeEventListener("pointermove", onMove)
-    window.removeEventListener("pointerup", onUp)
+    console.log("[onUp] drag end", nodeId)
+    document.removeEventListener("pointermove", onMove)
+    document.removeEventListener("pointerup", onUp)
   }
 
-  window.addEventListener("pointermove", onMove)
-  window.addEventListener("pointerup", onUp)
+  document.addEventListener("pointermove", onMove, { passive: false })
+  document.addEventListener("pointerup", onUp, { passive: false })
 }
+
 
 function onPointerDownBg(ev: PointerEvent) {
   const startX = ev.clientX
@@ -139,6 +157,7 @@ onMounted(() => {
       <MapCanvas
         ref="svgWrapper"
         :nodes="nodeStore.nodes"
+        :links="nodeStore.links"
         :selectedNodeId="selectedNodeId"
         :zoom="zoom"
         :pan="pan"
