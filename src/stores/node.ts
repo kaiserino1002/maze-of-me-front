@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 
-export interface Node {
+export interface AppNode {
   id: number
   text: string
   created_at?: string
@@ -17,12 +17,12 @@ export interface Link {
 
 export const useNodeStore = defineStore("node", {
   state: () => ({
-    nodes: [] as Node[],
+    nodes: [] as AppNode[],
     links: [] as Link[], 
     selectedNode: null as Node | null,
   }),
   actions: {
-    addNode(node: Node) {
+    addNode(node: AppNode) {
       if (node.x === undefined || node.y === undefined) {
         const index = this.nodes.length
         const cols = 4

@@ -1,23 +1,36 @@
-import { defineStore } from 'pinia'
-import axios from "axios"
+import { defineStore } from "pinia"
+import { getUser, loginWithGoogle, logout } from "@/utilities/auth"
 
-interface User {
+export interface AuthUser {
   id: number
   name: string
   email: string
 }
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore("auth", {
   state: () => ({
-    user: null as User | null,
-    isLoading: false,
+    user: null as AuthUser | null,
   }),
   actions: {
     async fetchUser() {
-      const res = await axios.get("/api/user")
-      this.user = res.data
+      try {
+        const user = await getUser()
+        this.user = user
+      } catch (e) {
+        this.user = null
+      }
     },
-    setUser(user: User) {
+    async login() {
+      const user = await loginWithGoogle()
+      this.user = user
+      // ログイン後は /map に遷移
+      window.location.href = "/map"
+    },
+    async logout() {
+      await logout()
+      this.user = null
+    },
+    setUser(user: AuthUser) {
       this.user = user
     },
     clearUser() {
