@@ -25,11 +25,14 @@ export async function saveNode(payload: NodePayload) {
       id: Date.now(),
       text: payload.text,
       created_at: new Date().toISOString(),
+      x: 200,
+      y: 150,
       color: "#ccc",
-      analysis: "mock analysis",
-      x: 0, // ダミー値
-      y: 0, // ダミー値
-};
+      analysis: {
+        summary: "モック分析結果: " + payload.text,
+        sentiment: "positive",
+      },
+    }
     const store = useNodeStore()
     store.addNode(mockNode)
     return { data: mockNode }

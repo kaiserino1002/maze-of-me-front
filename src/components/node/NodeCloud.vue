@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue"
 import { generateCloudPath } from "@/utilities/cloudShape"
-import type { Node } from "@/stores/node"
+import type { AppNode } from "@/stores/node"
 
-const props = defineProps<{ node: Node }>()
+const props = defineProps<{ node: AppNode }>()
 
 const maxChars = 12
 const fontSize = 14
