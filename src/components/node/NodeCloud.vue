@@ -39,7 +39,7 @@ const cloudPath = computed(() =>
     <!-- 雲 -->
     <path
       :d="cloudPath"
-      fill="#fff"
+      fill="lightgray"
       stroke="black"
       stroke-width="1.5"
       :transform="`translate(${-width/2}, ${-height/2})`"
